@@ -1,7 +1,7 @@
-﻿using TMPTaskService.Data.Repositories.Interfaces;
+﻿using TMPTaskService.Data.Interfaces;
 using TMPTaskService.Infrastructure;
 
-namespace TMPTaskService.Data.Repositories.Implementations
+namespace TMPTaskService.Data.Implementations
 {
 	public class DbTaskRepository(TMPDbContext dbContext) : ITaskRepository
 	{

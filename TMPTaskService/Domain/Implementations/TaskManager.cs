@@ -1,4 +1,4 @@
-﻿using TMPTaskService.Data.Repositories.Interfaces;
+﻿using TMPTaskService.Data.Interfaces;
 using TMPTaskService.Domain.Interfaces;
 
 namespace TMPTaskService.Domain.Implementations

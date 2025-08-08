@@ -1,4 +1,4 @@
-﻿namespace TMPTaskService.Data.Repositories.Interfaces
+﻿namespace TMPTaskService.Data.Interfaces
 {
 	public interface ITaskRepository
 	{

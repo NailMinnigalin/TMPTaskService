@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TMPTaskService.Data.Repositories.Implementations;
+using TMPTaskService.Data.Implementations;
 using TMPTaskService.Infrastructure;
 
 namespace TMPTaskServiceUnitTest
