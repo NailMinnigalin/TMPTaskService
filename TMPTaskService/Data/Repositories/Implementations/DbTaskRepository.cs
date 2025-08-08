@@ -7,7 +7,7 @@ namespace TMPTaskService.Data.Repositories.Implementations
 	{
 		private readonly TMPDbContext _dbContext = dbContext;
 
-		public async Task SaveTask(Models.Task task)
+		public async Task SaveNewTaskAsync(Models.Task task)
 		{
 			_dbContext.Tasks.Add(task);
 			await _dbContext.SaveChangesAsync();

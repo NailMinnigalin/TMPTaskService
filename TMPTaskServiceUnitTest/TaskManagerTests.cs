@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TMPTaskService.Data.Repositories.Implementations;
+using TMPTaskService.Domain.Implementations;
 using TMPTaskService.Infrastructure;
 
 namespace TMPTaskServiceUnitTest
 {
-	public class DbTaskRepositoryTests
+	public class TaskManagerTests
 	{
-		public DbTaskRepositoryTests()
+		public TaskManagerTests()
 		{
 			_options = new DbContextOptionsBuilder<TMPDbContext>()
 				.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
@@ -19,16 +20,32 @@ namespace TMPTaskServiceUnitTest
 		private readonly DbContextOptions<TMPDbContext> _options;
 
 		[Fact]
-		public async Task CreateTask_SaveTaskInDb()
+		public async Task CreateNewTask_SavesNewTask()
 		{
-			const string taskName = "Test task";
+			const string taskName = "Testing task";
 
 			using(var context = new TMPDbContext(_options))
 			{
-				DbTaskRepository dbTaskRepository = new(context);
-				
-				TMPTaskService.Data.Models.Task task = new() { Name = taskName, Description = "Test description" };
-				await dbTaskRepository.SaveNewTaskAsync(task);
+				TaskManager taskManager = new(new DbTaskRepository(context));
+				await taskManager.CreateTaskAsync(taskName, "TestDescription");
+			}
+
+			using(var context = new TMPDbContext(_options))
+			{
+				Assert.Equal(1, context.Tasks.Count());
+				Assert.Equal(taskName, context.Tasks.Single().Name);
+			}
+		}
+
+		[Fact]
+		public async Task CreateNewTask_SavesNewTask_WithNullDescription()
+		{
+			const string taskName = "Testing task";
+
+			using(var context = new TMPDbContext(_options))
+			{
+				TaskManager taskManager = new(new DbTaskRepository(context));
+				await taskManager.CreateTaskAsync(taskName, null);
 			}
 
 			using(var context = new TMPDbContext(_options))

@@ -2,6 +2,6 @@
 {
 	public interface ITaskRepository
 	{
-		public Task SaveTask(Models.Task task);
+		public Task SaveNewTaskAsync(Models.Task task);
 	}
 }

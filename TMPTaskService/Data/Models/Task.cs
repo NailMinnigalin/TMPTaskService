@@ -10,7 +10,6 @@ namespace TMPTaskService.Data.Models
 		[Required]
 		public required string Name { get; set; }
 
-		[Required]
-		public required string Description { get; set; }
+		public string? Description { get; set; }
 	}
 }
