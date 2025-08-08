@@ -5,14 +5,9 @@ namespace TMPTaskService.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	public class TaskController : Controller
+	public class TaskController(ITaskManager taskManager) : Controller
 	{
-		public TaskController(ITaskManager taskManager)
-		{
-			_taskManager = taskManager;
-		}
-
-		private readonly ITaskManager _taskManager;
+		private readonly ITaskManager _taskManager = taskManager;
 
 		[HttpPost]
 		public async Task<IActionResult> CreateTask(string name, string? description)

@@ -10,9 +10,7 @@ namespace TMPTaskServiceUnitTest
 		[Fact]
 		public async Task CreateTask_Return_Ok_When_Task_Created()
 		{
-			var mockTaskManager = new Mock<ITaskManager>();
-			mockTaskManager.Setup(m => m.CreateTaskAsync(It.IsAny<string>(), It.IsAny<string>()));
-			TaskController taskController = new(mockTaskManager.Object);
+			TaskController taskController = CreateTaskController();
 
 			var result = await taskController.CreateTask("TestTask", "TestDescription");
 
@@ -22,13 +20,19 @@ namespace TMPTaskServiceUnitTest
 		[Fact]
 		public async Task CreateTask_Return_Ok_When_Task_Created_With_Null_Description()
 		{
-			var mockTaskManager = new Mock<ITaskManager>();
-			mockTaskManager.Setup(m => m.CreateTaskAsync(It.IsAny<string>(), It.IsAny<string>()));
-			TaskController taskController = new(mockTaskManager.Object);
+			TaskController taskController = CreateTaskController();
 
 			var result = await taskController.CreateTask("TestTask", null);
 
 			Assert.IsType<OkResult>(result);
+		}
+
+		private static TaskController CreateTaskController()
+		{
+			var mockTaskManager = new Mock<ITaskManager>();
+			mockTaskManager.Setup(m => m.CreateTaskAsync(It.IsAny<string>(), It.IsAny<string>()));
+			TaskController taskController = new(mockTaskManager.Object);
+			return taskController;
 		}
 	}
 }

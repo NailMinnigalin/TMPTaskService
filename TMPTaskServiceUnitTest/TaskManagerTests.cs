@@ -24,17 +24,9 @@ namespace TMPTaskServiceUnitTest
 		{
 			const string taskName = "Testing task";
 
-			using(var context = new TMPDbContext(_options))
-			{
-				TaskManager taskManager = new(new DbTaskRepository(context));
-				await taskManager.CreateTaskAsync(taskName, "TestDescription");
-			}
+			await CreateTask(taskName, "TestDescription");
 
-			using(var context = new TMPDbContext(_options))
-			{
-				Assert.Equal(1, context.Tasks.Count());
-				Assert.Equal(taskName, context.Tasks.Single().Name);
-			}
+			CheckTaskExists(taskName);
 		}
 
 		[Fact]
@@ -42,23 +34,29 @@ namespace TMPTaskServiceUnitTest
 		{
 			const string taskName = "Testing task";
 
-			using(var context = new TMPDbContext(_options))
-			{
-				TaskManager taskManager = new(new DbTaskRepository(context));
-				await taskManager.CreateTaskAsync(taskName, null);
-			}
+			await CreateTask(taskName, null);
 
-			using(var context = new TMPDbContext(_options))
-			{
-				Assert.Equal(1, context.Tasks.Count());
-				Assert.Equal(taskName, context.Tasks.Single().Name);
-			}
+			CheckTaskExists(taskName);
 		}
 
 		public void Dispose()
 		{
 			using var context = new TMPDbContext(_options);
 			context.Database.EnsureDeleted();
+		}
+
+		private void CheckTaskExists(string taskName)
+		{
+			using var context = new TMPDbContext(_options);
+			Assert.Equal(1, context.Tasks.Count());
+			Assert.Equal(taskName, context.Tasks.Single().Name);
+		}
+
+		private async Task CreateTask(string taskName, string? taskDescription)
+		{
+			using var context = new TMPDbContext(_options);
+			TaskManager taskManager = new(new DbTaskRepository(context));
+			await taskManager.CreateTaskAsync(taskName, taskDescription);
 		}
 	}
 }
