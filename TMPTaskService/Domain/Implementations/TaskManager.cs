@@ -11,5 +11,10 @@ namespace TMPTaskService.Domain.Implementations
 		{
 			await _taskRepository.SaveNewTaskAsync(new Data.Models.Task { Name = taskName, Description = taskDescription });
 		}
+
+		public async Task<List<Data.Models.Task>> FindTasksAsync(string taskName, string? taskDescription)
+		{
+			return await _taskRepository.FindTasksAsync(taskName, taskDescription);
+		}
 	}
 }
