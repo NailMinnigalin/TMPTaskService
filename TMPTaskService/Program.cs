@@ -1,7 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 using TMPTaskService.Data.Implementations;
 using TMPTaskService.Data.Interfaces;
 using TMPTaskService.Domain.Implementations;
 using TMPTaskService.Domain.Interfaces;
+using TMPTaskService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +17,16 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<ITaskManager, TaskManager>();
 builder.Services.AddScoped<ITaskRepository, DbTaskRepository>();
 
+builder.Services.AddDbContext<TMPDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
