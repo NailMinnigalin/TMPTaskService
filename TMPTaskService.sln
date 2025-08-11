@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMPTaskService", "TMPTaskSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMPTaskServiceUnitTest", "TMPTaskServiceUnitTest\TMPTaskServiceUnitTest.csproj", "{77AD0E9A-695D-408D-ABB8-9F3ADC513DCF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMPTaskServiceIntegrationTests", "TMPTaskServiceIntegrationTests\TMPTaskServiceIntegrationTests.csproj", "{3DD7F9F7-D32D-4D31-93A5-FCB02FA1EE4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{77AD0E9A-695D-408D-ABB8-9F3ADC513DCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77AD0E9A-695D-408D-ABB8-9F3ADC513DCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77AD0E9A-695D-408D-ABB8-9F3ADC513DCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DD7F9F7-D32D-4D31-93A5-FCB02FA1EE4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DD7F9F7-D32D-4D31-93A5-FCB02FA1EE4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DD7F9F7-D32D-4D31-93A5-FCB02FA1EE4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DD7F9F7-D32D-4D31-93A5-FCB02FA1EE4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

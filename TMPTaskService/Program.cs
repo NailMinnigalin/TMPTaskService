@@ -1,3 +1,8 @@
+using TMPTaskService.Data.Implementations;
+using TMPTaskService.Data.Interfaces;
+using TMPTaskService.Domain.Implementations;
+using TMPTaskService.Domain.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<ITaskManager, TaskManager>();
+builder.Services.AddScoped<ITaskRepository, DbTaskRepository>();
 
 var app = builder.Build();
 
@@ -19,3 +27,5 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

@@ -12,7 +12,7 @@ namespace TMPTaskServiceUnitTest
 		{
 			TaskController taskController = CreateTaskController();
 
-			var result = await taskController.CreateTask("TestTask", "TestDescription");
+			var result = await taskController.CreateTask(new CreateTaskRequest() { Name = "TestTask", Description = "TestDescription" });
 
 			Assert.IsType<OkResult>(result);
 		}
@@ -22,7 +22,7 @@ namespace TMPTaskServiceUnitTest
 		{
 			TaskController taskController = CreateTaskController();
 
-			var result = await taskController.CreateTask("TestTask", null);
+			var result = await taskController.CreateTask(new CreateTaskRequest() { Name = "TestTask" });
 
 			Assert.IsType<OkResult>(result);
 		}
