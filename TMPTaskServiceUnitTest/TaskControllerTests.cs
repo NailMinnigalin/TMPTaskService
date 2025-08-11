@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TMPTaskService.Controllers;
 using TMPTaskService.Domain.Interfaces;
@@ -14,7 +15,7 @@ namespace TMPTaskServiceUnitTest
 
 			var result = await taskController.CreateTask(new CreateTaskRequest() { Name = "TestTask", Description = "TestDescription" });
 
-			Assert.IsType<OkResult>(result);
+			result.Should().BeOfType<OkResult>();
 		}
 
 		[Fact]
@@ -24,7 +25,7 @@ namespace TMPTaskServiceUnitTest
 
 			var result = await taskController.CreateTask(new CreateTaskRequest() { Name = "TestTask" });
 
-			Assert.IsType<OkResult>(result);
+			result.Should().BeOfType<OkResult>();
 		}
 
 		private static TaskController CreateTaskController()

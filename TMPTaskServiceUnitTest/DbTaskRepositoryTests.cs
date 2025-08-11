@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using TMPTaskService.Data.Implementations;
 using TMPTaskService.Infrastructure;
 
@@ -37,8 +38,8 @@ namespace TMPTaskServiceUnitTest
 		private void CheckTaskExists(string taskName)
 		{
 			using var context = new TMPDbContext(_options);
-			Assert.Equal(1, context.Tasks.Count());
-			Assert.Equal(taskName, context.Tasks.Single().Name);
+			context.Tasks.Should().HaveCount(1);
+			context.Tasks.Single().Name.Should().Be(taskName);
 		}
 
 		private async Task SaveNewTask(string taskName)
