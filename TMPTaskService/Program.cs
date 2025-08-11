@@ -17,16 +17,19 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<ITaskManager, TaskManager>();
 builder.Services.AddScoped<ITaskRepository, DbTaskRepository>();
 
-builder.Services.AddDbContext<TMPDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+if (builder.Environment.IsEnvironment("IntegrationTest"))
+	builder.Services.AddDbContext<TMPDbContext>(options => options.UseInMemoryDatabase("TestDb"));
+else
+	builder.Services.AddDbContext<TMPDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+   
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference();
+	app.MapOpenApi();
+	app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();

@@ -5,9 +5,9 @@ VisualStudioVersion = 17.14.36401.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMPTaskService", "TMPTaskService\TMPTaskService.csproj", "{A9CD2F76-6C74-4349-A018-EDD09ADCC878}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMPTaskServiceUnitTest", "TMPTaskServiceUnitTest\TMPTaskServiceUnitTest.csproj", "{77AD0E9A-695D-408D-ABB8-9F3ADC513DCF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "TMPTaskServiceUnitTest\UnitTests.csproj", "{77AD0E9A-695D-408D-ABB8-9F3ADC513DCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMPTaskServiceIntegrationTests", "TMPTaskServiceIntegrationTests\TMPTaskServiceIntegrationTests.csproj", "{3DD7F9F7-D32D-4D31-93A5-FCB02FA1EE4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "TMPTaskServiceIntegrationTests\IntegrationTests.csproj", "{3DD7F9F7-D32D-4D31-93A5-FCB02FA1EE4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
