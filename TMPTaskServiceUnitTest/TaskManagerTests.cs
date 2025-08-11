@@ -4,7 +4,7 @@ using TMPTaskService.Data.Implementations;
 using TMPTaskService.Domain.Implementations;
 using TMPTaskService.Infrastructure;
 
-namespace TMPTaskServiceUnitTest
+namespace UnitTests
 {
 	public class TaskManagerTests
 	{

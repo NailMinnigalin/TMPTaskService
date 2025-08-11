@@ -4,7 +4,7 @@ using Moq;
 using TMPTaskService.Controllers;
 using TMPTaskService.Domain.Interfaces;
 
-namespace TMPTaskServiceUnitTest
+namespace UnitTests
 {
 	public class TaskControllerTests
 	{
