@@ -24,7 +24,7 @@ namespace TMPTaskServiceIntegrationTests
 			// Arrange
 			const string TaskName = "Test Task";
 			const string TaskDescription = "Integration Test";
-			var newTask = new CreateTaskRequest { Name = TaskName, Description = TaskDescription };
+			var newTask = new TaskDTO { Name = TaskName, Description = TaskDescription };
 
             // Act
             var response = await _client.PostAsJsonAsync("/api/Task/CreateTask", newTask);
