@@ -30,7 +30,7 @@ namespace UnitTests
 		}
 
 		[Fact]
-		public async Task CreateNewTask_SavesNewTask()
+		public async Task CreateNewTask_Saves_New_Task()
 		{
 			const string taskName = "Testing task";
 
@@ -40,7 +40,7 @@ namespace UnitTests
 		}
 
 		[Fact]
-		public async Task CreateNewTask_SavesNewTask_WithNullDescription()
+		public async Task CreateNewTask_Saves_New_Task_With_Null_Description()
 		{
 			const string taskName = "Testing task";
 
@@ -50,7 +50,7 @@ namespace UnitTests
 		}
 
 		[Fact]
-		public async Task FindTasks_ReturnAllFoundedTasks()
+		public async Task FindTasks_Returns_All_Founded_Tasks()
 		{
 			const string taskName = "Testing task";
 			var mockTaskRepository = new Mock<ITaskRepository>();
@@ -64,7 +64,19 @@ namespace UnitTests
 
 			var tasks = await taskManager.FindTasksAsync(taskName, null);
 
-			tasks.Should().HaveCount(3);
+			tasks.Should().HaveCount(3, $"We created 3 tasks with {taskName}");
+		}
+
+		[Fact]
+		public async Task DeleteTask_Calls_ITaskRepository_DeleteTask_With_Given_Id()
+		{
+			Guid taskId = Guid.NewGuid();
+			var mockTaskRepository = new Mock<ITaskRepository>();
+			TaskManager taskManager = new(mockTaskRepository.Object);
+
+			await taskManager.DeleteTaskAsync(taskId);
+
+			mockTaskRepository.Verify(taskRepository => taskRepository.DeleteTaskAsync(taskId), Times.Once);
 		}
 
 		private void CheckTaskExists(string taskName)
