@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using TMPTaskService.Data.Implementations;
 using TMPTaskService.Infrastructure;
 
+using TMPTask = TMPTaskService.Data.Models.Task;
+
 namespace UnitTests
 {
 	public class DbTaskRepositoryTests
@@ -33,8 +35,8 @@ namespace UnitTests
 			await SaveNewTask(taskName, null);
 
 			using var context = new TMPDbContext(_options);
-			context.Tasks.Should().HaveCount(1);
-			context.Tasks.Single().Name.Should().Be(taskName);
+			context.Tasks.Should().HaveCount(1, "We created one task");
+			context.Tasks.Single().Name.Should().Be(taskName, $"We created task with name {taskName}");
 		}
 
 		[Fact]
@@ -44,9 +46,9 @@ namespace UnitTests
 			await SaveNewTask(taskName, null);
 			await SaveNewTask(taskName, null);
 			await SaveNewTask(taskName, null);
-			List<TMPTaskService.Data.Models.Task> tasks = await FindTask(taskName, null);
+			List<TMPTask> tasks = await FindTaskAsync(taskName, null);
 
-			tasks.Should().HaveCount(3);
+			tasks.Should().HaveCount(3, $"We created three tasks with {taskName}");
 		}
 
 		[Fact]
@@ -58,21 +60,41 @@ namespace UnitTests
 			await SaveNewTask(taskName, taskDescription);
 			await SaveNewTask(taskName, null);
 
-			var tasks = await FindTask(taskName, taskDescription);
+			var tasks = await FindTaskAsync(taskName, taskDescription);
 
-			tasks.Should().HaveCount(1);
-			tasks.First().Description.Should().Be(taskDescription);
+			tasks.Should().HaveCount(1, $"We created only one task with {taskName} and {taskDescription}");
+			tasks.First().Description.Should().Contain(taskDescription);
+		}
+
+		[Fact]
+		public async Task DeleteTask_DeleteTaskWithGivenId()
+		{
+			const string taskName = "Test task";
+			await SaveNewTask(taskName, null);
+			List<TMPTask> tasks = await FindTaskAsync(taskName, null);
+
+			await DeleteTask(tasks);
+
+			tasks = await FindTaskAsync(taskName, null);
+			tasks.Should().BeEmpty("Task should be deleted");
+		}
+
+		private async Task DeleteTask(List<TMPTask> tasks)
+		{
+			var context = new TMPDbContext(_options);
+			DbTaskRepository dbTaskRepository = new(context);
+			await dbTaskRepository.DeleteTaskAsync(tasks.First().Id);
 		}
 
 		private async Task SaveNewTask(string taskName, string? taskDescription)
 		{
 			using var context = new TMPDbContext(_options);
 			DbTaskRepository dbTaskRepository = new(context);
-			TMPTaskService.Data.Models.Task task = new() { Name = taskName, Description = taskDescription };
+			TMPTask task = new() { Name = taskName, Description = taskDescription };
 			await dbTaskRepository.SaveNewTaskAsync(task);
 		}
 
-		private async Task<List<TMPTaskService.Data.Models.Task>> FindTask(string taskName, string? taskDescription)
+		private async Task<List<TMPTask>> FindTaskAsync(string taskName, string? taskDescription)
 		{
 			using var context = new TMPDbContext(_options);
 			DbTaskRepository dbTaskRepository = new(context);

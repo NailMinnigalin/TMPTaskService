@@ -8,6 +8,16 @@ namespace TMPTaskService.Data.Implementations
 	{
 		private readonly TMPDbContext _dbContext = dbContext;
 
+		public async Task DeleteTaskAsync(Guid id)
+		{
+			var task = _dbContext.Tasks.Where(t => t.Id == id).FirstOrDefault();
+			if (task != null)
+			{
+				_dbContext.Tasks.Remove(task);
+				await _dbContext.SaveChangesAsync();
+			}
+		}
+
 		public async Task<List<Models.Task>> FindTasksAsync(string name, string? description)
 		{
 			var tasks = _dbContext.Tasks.Where(t => t.Name.Contains(name));
