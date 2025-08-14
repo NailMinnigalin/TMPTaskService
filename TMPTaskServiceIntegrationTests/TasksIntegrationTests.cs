@@ -39,5 +39,67 @@ namespace TMPTaskServiceIntegrationTests
             taskInDb.Should().NotBeNull();
             taskInDb!.Description.Should().Be(TaskDescription);
         }
+
+        [Fact]
+        public async Task FindTask_Should_Return_All_Appropriate_Tasks()
+        {
+            const string taskName = "Task";
+            await CreateTask(taskName, null);
+            await CreateTask(taskName, "SomeRandomDescription");
+            await CreateTask($"Prefix {taskName}", "SomeOtherRandomDescription");
+            await CreateTask("Another", null);
+            var taskDTO = new TaskDTO { Name = taskName};
+
+            var response = await _client.GetFromJsonAsync<List<TaskDTO>>($"/api/Task/FindTasks?{ToQueryString(taskDTO)}");
+
+            response.Should().NotBeNull("FindTask endpoint should return list of tasks");
+            response.Should().NotBeEmpty("FindTask endpoint should return filled list");
+            response.Should().AllSatisfy(task =>
+            {
+                task.Name.Should().Contain(taskName, "All found tasks should contain given name");
+           
+            
+            });
+        }
+
+        [Fact]
+        public async Task FindTask_Should_Return_All_Appropriate_Tasks_With_Description()
+        {
+            const string taskName = "Task";
+            const string taskDescription = "Other";
+            await CreateTask(taskName, null);
+            await CreateTask(taskName, "SomeRandomDescription");
+            await CreateTask($"Prefix {taskName}", "SomeOtherRandomDescription");
+            await CreateTask("Another", null);
+            var taskDTO = new TaskDTO { Name = taskName, Description = "Other"};
+
+            var response = await _client.GetFromJsonAsync<List<TaskDTO>>($"/api/Task/FindTasks?{ToQueryString(taskDTO)}");
+
+            response.Should().NotBeNull("FindTask endpoint should return list of tasks");
+            response.Should().NotBeEmpty("FindTask endpoint should return filled list");
+            response.Should().AllSatisfy(task =>
+            {
+                task.Name.Should().Contain(taskName, "All found tasks should contain given name");
+                task.Description.Should().Contain(taskDescription, "All found tasks should contain given description");
+            });
+        }
+
+		private async Task CreateTask(string taskName, string? taskDescription)
+		{
+			var newTask = new TaskDTO { Name = taskName, Description = taskDescription };
+            await _client.PostAsJsonAsync("/api/Task/CreateTask", newTask);
+		}
+
+		private static string ToQueryString(object obj)
+        {
+            if (obj == null) return string.Empty;
+
+            var properties = from property in obj.GetType().GetProperties()
+                             let value = property.GetValue(obj)
+                             where value != null
+                             select $"{Uri.EscapeDataString(property.Name)}={Uri.EscapeDataString(value.ToString()!)}";
+
+            return string.Join("&", properties);
+        }
     }
 }

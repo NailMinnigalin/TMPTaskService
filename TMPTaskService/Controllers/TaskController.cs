@@ -23,7 +23,7 @@ namespace TMPTaskService.Controllers
 		}
 
 		[HttpGet("FindTasks")]
-		public async Task<List<TaskDTO>> FindTasks(TaskDTO findTasksRequest)
+		public async Task<List<TaskDTO>> FindTasks([FromQuery] TaskDTO findTasksRequest)
 		{
 			var result = await _taskManager.FindTasksAsync(findTasksRequest.Name, findTasksRequest.Description);
 			return result.Select(t => new TaskDTO() { Name = t.Name, Description = t.Description}).ToList();
