@@ -28,5 +28,12 @@ namespace TMPTaskService.Controllers
 			var result = await _taskManager.FindTasksAsync(findTasksRequest.Name, findTasksRequest.Description);
 			return result.Select(t => new TaskDTO() { Name = t.Name, Description = t.Description}).ToList();
 		}
+
+		[HttpDelete("DeleteTask/{taskId}")]
+		public async Task<IActionResult> DeleteTask(Guid taskId)
+		{
+			await _taskManager.DeleteTaskAsync(taskId);
+			return Ok();
+		}
 	}
 }

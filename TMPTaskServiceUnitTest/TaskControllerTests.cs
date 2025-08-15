@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TMPTaskService.Controllers;
+using TMPTaskService.Data.Interfaces;
 using TMPTaskService.Domain.Interfaces;
 
 using Task = System.Threading.Tasks.Task;
@@ -58,6 +59,18 @@ namespace UnitTests
 			List<TaskDTO> result = await taskController.FindTasks(new TaskDTO() { Name = taskName, Description = taskDescription });
 
 			result.Should().AllSatisfy(t => t.Name.Contains(taskName), "All found tasks should contain given name");
+		}
+
+		[Fact]
+		public async Task DeleteTask_Calls_ITaskManager_DeleteTask_With_Given_Id()
+		{
+			Guid taskId = Guid.NewGuid();
+			var mockTaskManager = new Mock<ITaskManager>();
+			TaskController taskController = new(mockTaskManager.Object);
+
+			await taskController.DeleteTask(taskId);
+
+			mockTaskManager.Verify(taskManager => taskManager.DeleteTaskAsync(taskId), Times.Once());
 		}
 
 		private static TaskController CreateTaskControllerForCreateTaskTesting()
