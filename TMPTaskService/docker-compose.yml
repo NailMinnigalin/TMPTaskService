@@ -1,5 +1,5 @@
 services:
-  postgres:
+  db:
     image: postgres
     container_name: TMPTaskServiceDb
     environment:
@@ -8,3 +8,15 @@ services:
       POSTGRES_DB: TMPTaskServiceDb
     ports:
       - "5432:5432"
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: TMPTaskService
+    ports:
+     - "5000:8080"
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=TMPTaskServiceDb;Username=myuser;Password=mypassword"
