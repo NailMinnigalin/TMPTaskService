@@ -5,7 +5,7 @@ namespace TMPTaskService.Data.Models
 	public class Task
 	{
 		[Key]
-		public Guid Id { get; set; }
+		public Guid Id { get; set; } = Guid.NewGuid();
 
 		[Required]
 		public required string Name { get; set; }

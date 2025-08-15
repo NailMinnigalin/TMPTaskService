@@ -17,7 +17,7 @@ namespace UnitTests
 		{
 			TaskController taskController = CreateTaskControllerForCreateTaskTesting();
 
-			var result = await taskController.CreateTask(new TaskDTO() { Name = "TestTask", Description = "TestDescription" });
+			var result = await taskController.CreateTask(new TaskRequestDTO() { Name = "TestTask", Description = "TestDescription" });
 
 			result.Should().BeOfType<OkResult>();
 		}
@@ -27,7 +27,7 @@ namespace UnitTests
 		{
 			TaskController taskController = CreateTaskControllerForCreateTaskTesting();
 
-			var result = await taskController.CreateTask(new TaskDTO() { Name = "TestTask" });
+			var result = await taskController.CreateTask(new TaskRequestDTO() { Name = "TestTask" });
 
 			result.Should().BeOfType<OkResult>();
 		}
@@ -39,7 +39,7 @@ namespace UnitTests
 			const string taskDescription = "description";
 			TaskController taskController = CreateTaskControllerForFindTaskTesting(taskName, taskDescription);
 
-			List<TaskDTO> result = await taskController.FindTasks(new TaskDTO() {  Name = taskName, Description = taskDescription });
+			List<TaskReturnDTO> result = await taskController.FindTasks(new TaskRequestDTO() {  Name = taskName, Description = taskDescription });
 
 			result.Should().AllSatisfy(t => t.Name.Contains(taskName), "All found tasks should contain given name");
 			result.Should().AllSatisfy(t =>
@@ -56,7 +56,7 @@ namespace UnitTests
 			const string? taskDescription = null;
 			TaskController taskController = CreateTaskControllerForFindTaskTesting(taskName, taskDescription);
 
-			List<TaskDTO> result = await taskController.FindTasks(new TaskDTO() { Name = taskName, Description = taskDescription });
+			List<TaskReturnDTO> result = await taskController.FindTasks(new TaskRequestDTO() { Name = taskName, Description = taskDescription });
 
 			result.Should().AllSatisfy(t => t.Name.Contains(taskName), "All found tasks should contain given name");
 		}
@@ -73,6 +73,17 @@ namespace UnitTests
 			mockTaskManager.Verify(taskManager => taskManager.DeleteTaskAsync(taskId), Times.Once());
 		}
 
+		[Fact]
+		public async Task FindTask_Should_Return_Id()
+		{
+			const string taskName = "task";
+			TaskController taskController = CreateTaskControllerForFindTaskTesting(taskName, null);
+
+			var result = await taskController.FindTasks(new TaskRequestDTO() { Name = taskName });
+
+			result.First().Id.Should().NotBeEmpty();
+		}
+
 		private static TaskController CreateTaskControllerForCreateTaskTesting()
 		{
 			var mockTaskManager = new Mock<ITaskManager>();
@@ -86,14 +97,14 @@ namespace UnitTests
 			List<TMPTask> tasks = new();
 			if (taskDescription != null)
 			{
-				tasks.Add(new() { Name = taskName, Description = taskDescription });
-				tasks.Add(new() { Name = $"SomeRandomNamePrefix {taskName} SomeRandomNamePostfix", Description = $"SomeRandomDescriptionPrefix {taskDescription} SomeRandomDescriptionPostFix" });
+				tasks.Add(new() { Id = Guid.NewGuid(), Name = taskName, Description = taskDescription });
+				tasks.Add(new() { Id = Guid.NewGuid(), Name = $"SomeRandomNamePrefix {taskName} SomeRandomNamePostfix", Description = $"SomeRandomDescriptionPrefix {taskDescription} SomeRandomDescriptionPostFix" });
 			}
 			else
 			{
-				tasks.Add(new() { Name = taskName, Description = taskDescription });
-				tasks.Add(new() { Name = $"SomeRandomNamePrefix SomeRandomNamePostfix", Description = $"SomeRandomDescriptionPrefix SomeRandomDescriptionPostFix" });
-				tasks.Add(new() { Name = taskName, Description = null});
+				tasks.Add(new() { Id = Guid.NewGuid(), Name = taskName, Description = taskDescription });
+				tasks.Add(new() { Id = Guid.NewGuid(), Name = $"SomeRandomNamePrefix SomeRandomNamePostfix", Description = $"SomeRandomDescriptionPrefix SomeRandomDescriptionPostFix" });
+				tasks.Add(new() { Id = Guid.NewGuid(), Name = taskName, Description = null});
 			}
 
 			var mockTaskManager = new Mock<ITaskManager>();

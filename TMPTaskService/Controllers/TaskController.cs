@@ -3,7 +3,14 @@ using TMPTaskService.Domain.Interfaces;
 
 namespace TMPTaskService.Controllers
 {
-	public class TaskDTO
+	public class TaskReturnDTO
+	{
+		public required Guid Id { get; init; }
+		public required string Name { get; init; }
+		public string? Description { get; init; }
+	}
+
+	public class TaskRequestDTO
 	{
 		public required string Name { get; init; }
 		public string? Description { get; init; }
@@ -16,17 +23,17 @@ namespace TMPTaskService.Controllers
 		private readonly ITaskManager _taskManager = taskManager;
 
 		[HttpPost("CreateTask")]
-		public async Task<IActionResult> CreateTask([FromBody] TaskDTO createTaskRequest)
+		public async Task<IActionResult> CreateTask([FromBody] TaskRequestDTO createTaskRequest)
 		{
 			await _taskManager.CreateTaskAsync(createTaskRequest.Name, createTaskRequest.Description);
 			return Ok();
 		}
 
 		[HttpGet("FindTasks")]
-		public async Task<List<TaskDTO>> FindTasks([FromQuery] TaskDTO findTasksRequest)
+		public async Task<List<TaskReturnDTO>> FindTasks([FromQuery] TaskRequestDTO findTasksRequest)
 		{
 			var result = await _taskManager.FindTasksAsync(findTasksRequest.Name, findTasksRequest.Description);
-			return result.Select(t => new TaskDTO() { Name = t.Name, Description = t.Description}).ToList();
+			return result.Select(t => new TaskReturnDTO() { Id = t.Id, Name = t.Name, Description = t.Description}).ToList();
 		}
 
 		[HttpDelete("DeleteTask/{taskId}")]

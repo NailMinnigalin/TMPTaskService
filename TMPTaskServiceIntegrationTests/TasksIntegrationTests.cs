@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;
@@ -24,7 +25,7 @@ namespace TMPTaskServiceIntegrationTests
 			// Arrange
 			const string TaskName = "Test Task";
 			const string TaskDescription = "Integration Test";
-			var newTask = new TaskDTO { Name = TaskName, Description = TaskDescription };
+			var newTask = new TaskRequestDTO { Name = TaskName, Description = TaskDescription };
 
             // Act
             var response = await _client.PostAsJsonAsync("/api/Task/CreateTask", newTask);
@@ -48,9 +49,9 @@ namespace TMPTaskServiceIntegrationTests
             await CreateTask(taskName, "SomeRandomDescription");
             await CreateTask($"Prefix {taskName}", "SomeOtherRandomDescription");
             await CreateTask("Another", null);
-            var taskDTO = new TaskDTO { Name = taskName};
+            var taskDTO = new TaskRequestDTO { Name = taskName};
 
-            var response = await _client.GetFromJsonAsync<List<TaskDTO>>($"/api/Task/FindTasks?{ToQueryString(taskDTO)}");
+            var response = await _client.GetFromJsonAsync<List<TaskReturnDTO>>($"/api/Task/FindTasks?{ToQueryString(taskDTO)}");
 
             response.Should().NotBeNull("FindTask endpoint should return list of tasks");
             response.Should().NotBeEmpty("FindTask endpoint should return filled list");
@@ -71,9 +72,9 @@ namespace TMPTaskServiceIntegrationTests
             await CreateTask(taskName, "SomeRandomDescription");
             await CreateTask($"Prefix {taskName}", "SomeOtherRandomDescription");
             await CreateTask("Another", null);
-            var taskDTO = new TaskDTO { Name = taskName, Description = "Other"};
+            var taskDTO = new TaskRequestDTO { Name = taskName, Description = "Other"};
 
-            var response = await _client.GetFromJsonAsync<List<TaskDTO>>($"/api/Task/FindTasks?{ToQueryString(taskDTO)}");
+            var response = await _client.GetFromJsonAsync<List<TaskReturnDTO>>($"/api/Task/FindTasks?{ToQueryString(taskDTO)}");
 
             response.Should().NotBeNull("FindTask endpoint should return list of tasks");
             response.Should().NotBeEmpty("FindTask endpoint should return filled list");
@@ -84,9 +85,28 @@ namespace TMPTaskServiceIntegrationTests
             });
         }
 
+        [Fact]
+        public async Task DeleteTask_Should_Delete_Task_With_Given_Id()
+        {
+            const string taskName = "Task";
+            await CreateTask(taskName, null);
+            await CreateTask(taskName, "SomeRandomDescription");
+            await CreateTask($"Prefix {taskName}", "SomeOtherRandomDescription");
+            await CreateTask("Another", null);
+            var searchingData = new TaskRequestDTO { Name = taskName};
+            var preDeleteSearchList = await _client.GetFromJsonAsync<List<TaskReturnDTO>>($"/api/Task/FindTasks?{ToQueryString(searchingData)}");
+            var deletingTaskId = preDeleteSearchList!.First().Id;
+
+            var result = await _client.DeleteAsync($"/api/Task/DeleteTask/{deletingTaskId}");
+
+            var postDeleteSearchList = await _client.GetFromJsonAsync<List<TaskReturnDTO>>($"/api/Task/FindTasks?{ToQueryString(searchingData)}");
+            postDeleteSearchList.Count.Should().Be(preDeleteSearchList.Count - 1, "We deleted 1 task");
+            postDeleteSearchList.Should().NotContain(task => task.Id == deletingTaskId, "We deleted task with given id");
+        }
+
 		private async Task CreateTask(string taskName, string? taskDescription)
 		{
-			var newTask = new TaskDTO { Name = taskName, Description = taskDescription };
+			var newTask = new TaskRequestDTO { Name = taskName, Description = taskDescription };
             await _client.PostAsJsonAsync("/api/Task/CreateTask", newTask);
 		}
 
