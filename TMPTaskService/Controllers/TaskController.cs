@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TMPTaskService.Domain.Interfaces;
+using TMPTaskService.Infrastructure;
 
 namespace TMPTaskService.Controllers
 {
@@ -22,6 +23,7 @@ namespace TMPTaskService.Controllers
 	{
 		private readonly ITaskManager _taskManager = taskManager;
 
+		[RequireAuthorization]
 		[HttpPost("CreateTask")]
 		public async Task<IActionResult> CreateTask([FromBody] TaskRequestDTO createTaskRequest)
 		{
@@ -36,6 +38,7 @@ namespace TMPTaskService.Controllers
 			return result.Select(t => new TaskReturnDTO() { Id = t.Id, Name = t.Name, Description = t.Description}).ToList();
 		}
 
+		[RequireAuthorization]
 		[HttpDelete("DeleteTask/{taskId}")]
 		public async Task<IActionResult> DeleteTask(Guid taskId)
 		{

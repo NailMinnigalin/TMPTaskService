@@ -16,6 +16,10 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<ITaskManager, TaskManager>();
 builder.Services.AddScoped<ITaskRepository, DbTaskRepository>();
+builder.Services.AddHttpClient<IAuthenticationManager, WebAuthenticationManager>(client =>
+{
+	client.BaseAddress = new Uri(builder.Configuration.GetConnectionString("AuthenticationService"));
+});
 
 if (builder.Environment.IsEnvironment("IntegrationTest"))
 	builder.Services.AddDbContext<TMPDbContext>(options => options.UseInMemoryDatabase("TestDb"));
@@ -33,6 +37,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<AuthorizationMiddleware>();
 
 app.MapControllers();
 
