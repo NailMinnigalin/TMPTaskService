@@ -26,8 +26,14 @@ if (builder.Environment.IsEnvironment("IntegrationTest"))
 else
 	builder.Services.AddDbContext<TMPDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
    
-
 var app = builder.Build();
+
+if (builder.Configuration.GetValue<bool>("DataBaseInit"))
+{
+	using var scope1 = app.Services.CreateScope();
+	var db1 = scope1.ServiceProvider.GetRequiredService<TMPDbContext>();
+	db1.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
